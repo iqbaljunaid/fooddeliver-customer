@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,14 +9,37 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Modal,
+  Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuthStore } from '../../stores/authStore';
+import { getApiUrl, getSocketUrl, setServerUrls } from '../../services/serverConfig';
 
 export default function LoginScreen() {
   const { login, isLoading, error, clearError } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showServerConfig, setShowServerConfig] = useState(false);
+  const [serverUrl, setServerUrl] = useState('');
+  const [socketUrl, setSocketUrlState] = useState('');
+
+  useEffect(() => {
+    setServerUrl(getApiUrl().replace(/\/api$/, ''));
+    setSocketUrlState(getSocketUrl());
+  }, []);
+
+  const handleSaveServer = async () => {
+    if (!serverUrl.trim()) {
+      Alert.alert('Error', 'Please enter a server URL');
+      return;
+    }
+    const trimmedApi = serverUrl.trim().replace(/\/+$/, '');
+    const trimmedSocket = socketUrl.trim().replace(/\/+$/, '') || trimmedApi;
+    await setServerUrls(trimmedApi, trimmedSocket);
+    setShowServerConfig(false);
+    Alert.alert('Saved', `Server: ${trimmedApi}`);
+  };
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) return;
@@ -97,7 +120,66 @@ export default function LoginScreen() {
             Don't have an account? <Text style={styles.registerBold}>Sign Up</Text>
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.serverConfigButton}
+          onPress={() => setShowServerConfig(true)}
+        >
+          <Text style={styles.serverConfigText}>⚙ Server Settings</Text>
+        </TouchableOpacity>
       </ScrollView>
+
+      <Modal
+        visible={showServerConfig}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowServerConfig(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Server Configuration</Text>
+
+            <Text style={styles.modalLabel}>API Server URL</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={serverUrl}
+              onChangeText={setServerUrl}
+              placeholder="http://192.168.1.107"
+              placeholderTextColor="#999"
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
+
+            <Text style={styles.modalLabel}>WebSocket URL</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={socketUrl}
+              onChangeText={setSocketUrlState}
+              placeholder="http://192.168.1.107"
+              placeholderTextColor="#999"
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+            />
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalCancelButton}
+                onPress={() => setShowServerConfig(false)}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalSaveButton}
+                onPress={handleSaveServer}
+              >
+                <Text style={styles.modalSaveText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -185,5 +267,78 @@ const styles = StyleSheet.create({
   registerBold: {
     fontWeight: '600',
     color: '#009DE0',
+  },
+  serverConfigButton: {
+    alignItems: 'center',
+    marginBottom: 32,
+    marginTop: 8,
+  },
+  serverConfigText: {
+    fontSize: 13,
+    color: '#999',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 24,
+    paddingBottom: 40,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 20,
+  },
+  modalLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 15,
+    backgroundColor: '#FAFAFA',
+    color: '#333',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+  },
+  modalCancelButton: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    alignItems: 'center',
+  },
+  modalCancelText: {
+    fontSize: 15,
+    color: '#666',
+    fontWeight: '500',
+  },
+  modalSaveButton: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 10,
+    backgroundColor: '#009DE0',
+    alignItems: 'center',
+  },
+  modalSaveText: {
+    fontSize: 15,
+    color: '#fff',
+    fontWeight: '600',
   },
 });
