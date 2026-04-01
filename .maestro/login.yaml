@@ -1,0 +1,15 @@
+appId: com.foodrush.customer
+---
+- launchApp:
+    appId: com.foodrush.customer
+    clearState: true
+- assertVisible: "Food Rush"
+- assertVisible: "Sign in to order delicious food"
+- tapOn: "your@email.com"
+- inputText: "aisha@customer.com"
+- tapOn: "Enter password"
+- inputText: "password123"
+- tapOn: "Sign In"
+- extendedWaitUntil:
+    visible: "What are you craving"
+    timeout: 15000

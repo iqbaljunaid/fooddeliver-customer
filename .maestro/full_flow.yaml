@@ -1,0 +1,46 @@
+appId: com.foodrush.customer
+---
+- launchApp:
+    appId: com.foodrush.customer
+    clearState: true
+
+# Login
+- tapOn: "your@email.com"
+- inputText: "aisha@customer.com"
+- tapOn: "Enter password"
+- inputText: "password123"
+- tapOn: "Sign In"
+- waitForAnimationToEnd
+
+# Verify Home screen
+- assertVisible: "Food Rush"
+- assertVisible: "Dragon Palace"
+
+# Tap on restaurant
+- tapOn: "Dragon Palace"
+- waitForAnimationToEnd
+
+# Wait for menu to load and take screenshot
+- assertVisible:
+    text: "Dragon Palace"
+- takeScreenshot: /tmp/maestro-restaurant-detail
+
+# Go back and check other tabs
+- back
+- waitForAnimationToEnd
+
+# Tap Cart tab
+- tapOn: "Cart"
+- waitForAnimationToEnd
+- takeScreenshot: /tmp/maestro-cart
+
+# Tap Orders tab
+- tapOn: "Orders"
+- waitForAnimationToEnd
+- takeScreenshot: /tmp/maestro-orders
+
+# Tap Profile tab
+- tapOn: "Profile"
+- waitForAnimationToEnd
+- assertVisible: "aisha@customer.com"
+- takeScreenshot: /tmp/maestro-profile
