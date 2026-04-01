@@ -47,7 +47,7 @@ export default function RestaurantDetailScreen() {
                 {
                   menuItemId: selectedItem.id,
                   name: selectedItem.name,
-                  price: selectedItem.price,
+                  price: Number(selectedItem.price),
                   quantity,
                   options: selectedOptions,
                 },
@@ -68,7 +68,7 @@ export default function RestaurantDetailScreen() {
       {
         menuItemId: selectedItem.id,
         name: selectedItem.name,
-        price: selectedItem.price,
+        price: Number(selectedItem.price),
         quantity,
         options: selectedOptions,
       },
@@ -204,17 +204,27 @@ export default function RestaurantDetailScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{selectedItem?.name}</Text>
+            {/* Header row with title and close button */}
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{selectedItem?.name}</Text>
+              <TouchableOpacity
+                onPress={() => setSelectedItem(null)}
+                style={styles.modalCloseBtn}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={styles.modalCloseBtnText}>✕</Text>
+              </TouchableOpacity>
+            </View>
             {selectedItem?.description ? (
               <Text style={styles.modalDesc}>{selectedItem.description}</Text>
             ) : null}
-            <Text style={styles.modalPrice}>${selectedItem?.price.toFixed(2)}</Text>
+            <Text style={styles.modalPrice}>${Number(selectedItem?.price).toFixed(2)}</Text>
 
             {/* Options */}
             {selectedItem?.options?.map((group) => (
               <View key={group.id} style={styles.optionGroup}>
                 <Text style={styles.optionGroupName}>
-                  {group.name} {group.required ? '(required)' : ''}
+                  {group.name} {group.isRequired ? '(required)' : ''}
                 </Text>
                 {group.options.map((opt) => {
                   const isSelected = selectedOptions.some(
@@ -222,13 +232,13 @@ export default function RestaurantDetailScreen() {
                   );
                   return (
                     <TouchableOpacity
-                      key={opt.id}
+                      key={opt.name}
                       style={[styles.optionRow, isSelected && styles.optionRowSelected]}
-                      onPress={() => toggleOption(group, opt.name, opt.price)}
+                      onPress={() => toggleOption(group, opt.name, Number(opt.price))}
                     >
                       <Text style={styles.optionName}>{opt.name}</Text>
-                      {opt.price > 0 && (
-                        <Text style={styles.optionPrice}>+${opt.price.toFixed(2)}</Text>
+                      {Number(opt.price) > 0 && (
+                        <Text style={styles.optionPrice}>+${Number(opt.price).toFixed(2)}</Text>
                       )}
                     </TouchableOpacity>
                   );
@@ -257,7 +267,7 @@ export default function RestaurantDetailScreen() {
               <Text style={styles.addButtonText}>
                 Add to Cart · $
                 {(
-                  (selectedItem?.price || 0) +
+                  Number(selectedItem?.price || 0) +
                   selectedOptions.reduce((s, o) => s + o.price, 0)
                 ).toFixed(2)}
               </Text>
@@ -335,7 +345,10 @@ const styles = StyleSheet.create({
     padding: 24,
     maxHeight: '80%',
   },
-  modalTitle: { fontSize: 22, fontWeight: '700', color: '#1A1A1A' },
+  modalTitle: { fontSize: 22, fontWeight: '700', color: '#1A1A1A', flex: 1, marginRight: 8 },
+  modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
+  modalCloseBtn: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#F0F0F0', justifyContent: 'center', alignItems: 'center' },
+  modalCloseBtnText: { fontSize: 14, color: '#555', fontWeight: '600' },
   modalDesc: { fontSize: 14, color: '#666', marginTop: 4 },
   modalPrice: { fontSize: 18, fontWeight: '600', color: '#009DE0', marginTop: 8 },
   optionGroup: { marginTop: 16 },

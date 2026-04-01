@@ -47,7 +47,7 @@ export interface MenuItem {
   id: string;
   name: string;
   description: string;
-  price: number;
+  price: number | string;
   imageUrl: string | null;
   isAvailable: boolean;
   categoryId: string;
@@ -57,15 +57,15 @@ export interface MenuItem {
 export interface MenuOptionGroup {
   id: string;
   name: string;
-  required: boolean;
+  isRequired: boolean;
+  minSelections: number;
   maxSelections: number;
   options: MenuOption[];
 }
 
 export interface MenuOption {
-  id: string;
   name: string;
-  price: number;
+  price: number | string;
 }
 
 // Cart types

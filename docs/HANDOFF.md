@@ -1,5 +1,35 @@
 # Handoff Notes — April 2, 2026
 
+## Session 2 — Menu Items Display, Close Button & Crash Fixes
+
+### Summary
+Fixed restaurant menu page crash (price returned as string from DB, old option type shape), added a close ✕ button to the add-to-cart modal, and added Unsplash food images to all menu items in the DB.
+
+### What Was Done
+
+#### 1. Restaurant Page Crash Fix — `app/(main)/restaurant/[id].tsx`
+- `price` returned from API as a string (`"8.99"`) — calling `.toFixed()` directly on it crashed
+- Wrapped all price usages in `Number(...)` before `.toFixed(2)` or arithmetic
+- `MenuOptionGroup.required` renamed to `isRequired` to match the new API shape
+- `opt.id` removed (inner options array `{name, price}` has no `id`) — keyed by `opt.name` instead
+- `opt.price.toFixed(2)` wrapped in `Number(opt.price).toFixed(2)`
+- Both `addItem()` calls now pass `Number(selectedItem.price)` to the cart store
+
+#### 2. Close Button Added to Cart Modal — `app/(main)/restaurant/[id].tsx`
+- Added an ✕ button in the top-right of the bottom sheet header row (alongside the item title)
+- Style: circular `#F0F0F0` background, 32×32, dismisses modal on press
+
+#### 3. `MenuItemCard` Price Fix — `components/MenuItemCard.tsx`
+- `item.price.toFixed(2)` → `Number(item.price).toFixed(2)` (same string price crash)
+
+#### 4. Type Updates — `types/index.ts`
+- `MenuItem.price`: `number` → `number | string`
+- `MenuOptionGroup.required` → `isRequired: boolean`
+- Added `minSelections: number` to `MenuOptionGroup`
+- `MenuOption.id` removed; `MenuOption.price`: `number` → `number | string`
+
+---
+
 ## Session 1 — Android Release Build, Network Fixes & Orders Crash
 
 ### Summary

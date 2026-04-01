@@ -24,7 +24,7 @@ export default function MenuItemCard({ item, onPress }: Props) {
             {item.description}
           </Text>
         ) : null}
-        <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+        <Text style={styles.price}>${Number(item.price).toFixed(2)}</Text>
         {!item.isAvailable && (
           <Text style={styles.unavailableText}>Unavailable</Text>
         )}
