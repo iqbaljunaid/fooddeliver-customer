@@ -11,21 +11,35 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useMyOrders } from '../../hooks/useOrders';
-import type { OrderStatus } from '../../types';
+import { useAuthStore } from '../../stores/authStore';
 
-const STATUS_COLORS: Record<OrderStatus, string> = {
-  PLACED: '#2196F3',
-  ACCEPTED: '#4CAF50',
+const STATUS_COLORS: Record<string, string> = {
+  placed:    '#2196F3',
+  accepted:  '#4CAF50',
+  preparing: '#FF9800',
+  ready:     '#9C27B0',
+  picked_up: '#00BCD4',
+  delivered: '#4CAF50',
+  cancelled: '#F44336',
+  rejected:  '#F44336',
+  // uppercase aliases for forward-compat
+  PLACED:    '#2196F3',
+  ACCEPTED:  '#4CAF50',
   PREPARING: '#FF9800',
-  READY: '#9C27B0',
+  READY:     '#9C27B0',
   PICKED_UP: '#00BCD4',
   DELIVERED: '#4CAF50',
   CANCELLED: '#F44336',
-  REJECTED: '#F44336',
+  REJECTED:  '#F44336',
 };
 
+function statusColor(status: string): string {
+  return STATUS_COLORS[status] ?? STATUS_COLORS[status.toUpperCase()] ?? '#999';
+}
+
 export default function OrdersScreen() {
-  const { data: orders, isLoading, refetch, isRefetching } = useMyOrders();
+  const { user } = useAuthStore();
+  const { data: orders, isLoading, refetch, isRefetching } = useMyOrders(user?.id);
 
   if (isLoading) {
     return (
@@ -54,13 +68,13 @@ export default function OrdersScreen() {
               <View
                 style={[
                   styles.statusBadge,
-                  { backgroundColor: STATUS_COLORS[item.status] + '20' },
+                  { backgroundColor: statusColor(item.status) + '20' },
                 ]}
               >
                 <Text
                   style={[
                     styles.statusText,
-                    { color: STATUS_COLORS[item.status] },
+                    { color: statusColor(item.status) },
                   ]}
                 >
                   {item.status.replace('_', ' ')}

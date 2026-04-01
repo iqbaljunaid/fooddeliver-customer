@@ -2,10 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ordersApi } from '../services/api';
 import type { CreateOrderDto } from '../types';
 
-export function useMyOrders() {
+export function useMyOrders(userId?: string) {
   return useQuery({
-    queryKey: ['orders'],
-    queryFn: () => ordersApi.getMyOrders(),
+    queryKey: ['orders', userId],
+    queryFn: () => ordersApi.getMyOrders(userId),
+    enabled: !!userId,
     staleTime: 10000,
   });
 }

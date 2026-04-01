@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import type { OrderStatus } from '../types';
 
-const STEPS: { status: OrderStatus; label: string; emoji: string }[] = [
+const STEPS: { status: string; label: string; emoji: string }[] = [
   { status: 'PLACED', label: 'Placed', emoji: '📝' },
   { status: 'ACCEPTED', label: 'Accepted', emoji: '✅' },
   { status: 'PREPARING', label: 'Preparing', emoji: '👨‍🍳' },
@@ -11,27 +10,28 @@ const STEPS: { status: OrderStatus; label: string; emoji: string }[] = [
   { status: 'DELIVERED', label: 'Delivered', emoji: '🎉' },
 ];
 
-const TERMINAL_STATUSES: OrderStatus[] = ['CANCELLED', 'REJECTED'];
+const TERMINAL_STATUSES = ['CANCELLED', 'REJECTED'];
 
 interface Props {
-  currentStatus: OrderStatus;
+  currentStatus: string;
 }
 
 export default function OrderStatusBar({ currentStatus }: Props) {
-  if (TERMINAL_STATUSES.includes(currentStatus)) {
+  const normalised = currentStatus.toUpperCase();
+  if (TERMINAL_STATUSES.includes(normalised)) {
     return (
       <View style={styles.terminalContainer}>
         <Text style={styles.terminalEmoji}>
-          {currentStatus === 'CANCELLED' ? '❌' : '🚫'}
+          {normalised === 'CANCELLED' ? '❌' : '🚫'}
         </Text>
         <Text style={styles.terminalText}>
-          {currentStatus === 'CANCELLED' ? 'Order Cancelled' : 'Order Rejected'}
+          {normalised === 'CANCELLED' ? 'Order Cancelled' : 'Order Rejected'}
         </Text>
       </View>
     );
   }
 
-  const currentIndex = STEPS.findIndex((s) => s.status === currentStatus);
+  const currentIndex = STEPS.findIndex((s) => s.status === normalised);
 
   return (
     <View style={styles.container}>

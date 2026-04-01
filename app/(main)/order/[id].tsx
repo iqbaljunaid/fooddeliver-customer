@@ -16,7 +16,7 @@ import OrderStatusBar from '../../../components/OrderStatusBar';
 import OSMMapView, { MapMarker, MapPolyline } from '../../../components/OSMMapView';
 import type { OrderStatus } from '../../../types';
 
-const SHOW_MAP_STATUSES: OrderStatus[] = ['ACCEPTED', 'PREPARING', 'READY', 'PICKED_UP'];
+const SHOW_MAP_STATUSES = ['ACCEPTED', 'PREPARING', 'READY', 'PICKED_UP'];
 
 export default function OrderTrackingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -28,7 +28,7 @@ export default function OrderTrackingScreen() {
     estimatedDeliveryTime,
   } = useOrderSocket(id);
 
-  const currentStatus = socketStatus || order?.status || 'PLACED';
+  const currentStatus = (socketStatus || order?.status || 'PLACED').toUpperCase();
   const eta = estimatedDeliveryTime || order?.estimatedDeliveryTime;
 
   const etaText = useMemo(() => {

@@ -208,9 +208,10 @@ export const ordersApi = {
     return response.data;
   },
 
-  getMyOrders: async (): Promise<Order[]> => {
-    const response = await api.get('/orders');
-    return response.data;
+  getMyOrders: async (userId?: string): Promise<Order[]> => {
+    const params = userId ? { customer_id: userId } : {};
+    const response = await api.get('/orders', { params });
+    return Array.isArray(response.data) ? response.data : [];
   },
 
   getById: async (id: string): Promise<Order> => {
