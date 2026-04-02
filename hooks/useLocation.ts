@@ -47,7 +47,7 @@ export function useLocation(): UseLocationReturn {
       setIsLoading(true);
       setError(null);
 
-      if (hasPermission === false) {
+      if (hasPermission !== true) {
         const granted = await requestPermission();
         if (!granted) return null;
       }

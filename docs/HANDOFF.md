@@ -1,5 +1,32 @@
 # Handoff Notes — April 2, 2026
 
+## Session 3 — Add Delivery Address 500 Error Fix
+
+### Summary
+Fixed a 500 error when customers tried to save a new delivery address. Root cause: location permission was never requested on first use, causing the hook to return `null`, which the cart screen silently converted to `lat: 0, lng: 0` — coordinates the backend crashed on.
+
+### What Was Done
+
+#### 1. Location Permission Fix — `hooks/useLocation.ts`
+- Changed `if (hasPermission === false)` → `if (hasPermission !== true)`
+- Previously, permission was only requested after an explicit denial; when `hasPermission` was `null` (initial state), the hook skipped the permission request and went straight to `getCurrentPositionAsync()`, which threw and returned `null`
+- Now permission is always requested if not already confirmed granted
+
+#### 2. Null Location Guard — `app/(main)/cart.tsx`
+- Added early return with user-facing alert if `getCurrentLocation()` returns `null`
+- Removed the silent `lat: loc?.lat || 0, lng: loc?.lng || 0` fallback that was sending `(0, 0)` (Null Island) to the backend
+- Backend was crashing with 500 trying to create a PostGIS geometry from those coordinates
+
+#### 3. Error Message Fix — `app/(main)/cart.tsx`
+- `catch` block now reads `error.response?.data?.message` before falling back to `error.message`
+- Matches the same pattern already used in `handlePlaceOrder`
+- Prevents the generic "Request failed with status code 500" from hiding the actual server error
+
+#### 4. Added CLAUDE.md
+- Created `CLAUDE.md` with build commands, environment setup, and architecture overview for future Claude Code sessions
+
+---
+
 ## Session 2 — Menu Items Display, Close Button & Crash Fixes
 
 ### Summary

@@ -107,14 +107,19 @@ export default function CartScreen() {
 
     try {
       const loc = await getCurrentLocation();
+      if (!loc) {
+        Alert.alert('Location Required', 'Please enable location permissions to save a delivery address.');
+        return;
+      }
+
       const data: CreateAddressDto = {
         label: newLabel,
         street: newStreet.trim(),
         city: newCity.trim(),
         state: newState.trim() || 'N/A',
         postalCode: newPostalCode.trim() || '00000',
-        lat: loc?.lat || 0,
-        lng: loc?.lng || 0,
+        lat: loc.lat,
+        lng: loc.lng,
         isDefault: (addresses?.length || 0) === 0,
       };
 
@@ -126,7 +131,8 @@ export default function CartScreen() {
       setNewState('');
       setNewPostalCode('');
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to add address');
+      const message = error.response?.data?.message || error.message || 'Failed to add address';
+      Alert.alert('Error', message);
     }
   };
 
