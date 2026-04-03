@@ -1,8 +1,8 @@
 export default ({ config }) => ({
   ...config,
-  name: process.env.APP_NAME || 'Food Rush',
+  name: process.env.APP_NAME || 'Food Rush Customer',
   slug: 'food-rush-customer',
-  version: '1.0.0',
+  version: '1.0.1',
   orientation: 'portrait',
   icon: './assets/icon.png',
   scheme: 'foodrush-customer',
@@ -10,7 +10,7 @@ export default ({ config }) => ({
   splash: {
     image: './assets/splash-icon.png',
     resizeMode: 'contain',
-    backgroundColor: '#009DE0',
+    backgroundColor: '#0069BE',
   },
   assetBundlePatterns: ['**/*'],
   ios: {
