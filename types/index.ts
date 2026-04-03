@@ -21,18 +21,18 @@ export interface Restaurant {
   id: string;
   name: string;
   description: string;
-  cuisineType: string[];
-  address: string;
-  location: GeoJSON;
-  rating: number;
-  totalReviews: number;
-  deliveryFee: number;
-  minimumOrder: number;
+  cuisine: string[];
+  address?: string;
+  latitude: number;
+  longitude: number;
+  rating: number | string;
+  ratingCount: number;
+  deliveryFee: number | string;
+  minOrder: number | string;
   estimatedDeliveryTime: number;
   priceRange: number;
   imageUrl: string | null;
-  isOpen: boolean;
-  openingHours: Record<string, { open: string; close: string }>;
+  isAcceptingOrders: boolean;
 }
 
 export interface MenuCategory {
@@ -88,7 +88,8 @@ export interface Address {
   city: string;
   state: string;
   postalCode: string;
-  location: GeoJSON;
+  latitude: number;
+  longitude: number;
   instructions?: string;
   isDefault: boolean;
 }
@@ -160,6 +161,7 @@ export interface Order {
 
 export interface CreateOrderDto {
   restaurantId: string;
+  customerId: string;
   deliveryAddressId: string;
   items: {
     menuItemId: string;

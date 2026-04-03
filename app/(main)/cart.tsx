@@ -14,8 +14,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useCartStore } from '../../stores/cartStore';
+import { useAuthStore } from '../../stores/authStore';
 import { useAddresses, useCreateAddress } from '../../hooks/useAddresses';
 import { useCreateOrder } from '../../hooks/useOrders';
+import { useRestaurant } from '../../hooks/useRestaurants';
 import { useLocation } from '../../hooks/useLocation';
 import { useOrderStore } from '../../stores/orderStore';
 import CartItemComponent from '../../components/CartItem';
@@ -31,7 +33,9 @@ const TAX_RATE = 0.08;
 export default function CartScreen() {
   const { items, restaurantName, restaurantId, updateQuantity, removeItem, clearCart, subtotal } =
     useCartStore();
+  const { user } = useAuthStore();
   const { data: addresses, isLoading: loadingAddresses } = useAddresses();
+  const { data: restaurant } = useRestaurant(restaurantId || '');
   const createAddress = useCreateAddress();
   const createOrder = useCreateOrder();
   const { setActiveOrder } = useOrderStore();
@@ -66,16 +70,30 @@ export default function CartScreen() {
       return;
     }
 
+    const selectedAddress = addresses?.find((a) => a.id === activeAddressId);
+    if (!selectedAddress) {
+      Alert.alert('Missing info', 'Please select a delivery address.');
+      return;
+    }
+
     setIsPlacing(true);
     try {
+      const pickupLat = restaurant?.latitude ?? 0;
+      const pickupLon = restaurant?.longitude ?? 0;
+
       const order = await createOrder.mutateAsync({
         restaurantId,
+        customerId: user!.id,
         deliveryAddressId: activeAddressId,
+        pickupLat,
+        pickupLon,
+        dropoffLat: selectedAddress.latitude,
+        dropoffLon: selectedAddress.longitude,
         items: items.map((item) => ({
           menuItemId: item.menuItemId,
           name: item.name,
           quantity: item.quantity,
-          unitPrice: item.price,
+          unitPrice: parseFloat(String(item.price)),
           options: item.options.length > 0
             ? Object.fromEntries(item.options.map((o) => [o.name, o.value]))
             : undefined,
@@ -86,14 +104,16 @@ export default function CartScreen() {
         discount: 0,
         specialInstructions: specialInstructions || undefined,
         paymentMethod,
-      });
+      } as any);
 
       setActiveOrder(order.id, 'PLACED');
       clearCart();
       router.push(`/(main)/order/${order.id}`);
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Failed to place order';
-      Alert.alert('Order Failed', message);
+      const data = error.response?.data;
+      const message = data?.message || data?.error || error.message || 'Failed to place order';
+      const details = data?.details ? '\n' + JSON.stringify(data.details, null, 2) : '';
+      Alert.alert('Order Failed', message + details);
     } finally {
       setIsPlacing(false);
     }

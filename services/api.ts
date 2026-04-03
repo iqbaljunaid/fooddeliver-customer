@@ -203,8 +203,32 @@ export const restaurantsApi = {
 
 // ---- Orders API ----
 export const ordersApi = {
-  create: async (data: CreateOrderDto): Promise<Order> => {
-    const response = await api.post('/orders', data);
+  create: async (data: CreateOrderDto & {
+    pickupLat: number; pickupLon: number;
+    dropoffLat: number; dropoffLon: number;
+  }): Promise<Order> => {
+    const response = await api.post('/orders', {
+      restaurant_id: data.restaurantId,
+      customer_id: data.customerId,
+      delivery_address_id: data.deliveryAddressId,
+      pickup_lat: data.pickupLat,
+      pickup_lon: data.pickupLon,
+      dropoff_lat: data.dropoffLat,
+      dropoff_lon: data.dropoffLon,
+      items: data.items.map((item) => ({
+        menu_item_id: item.menuItemId,
+        name: item.name,
+        quantity: item.quantity,
+        unit_price: item.unitPrice,
+        options: item.options ? [item.options] : undefined,
+        special_instructions: item.specialInstructions,
+      })),
+      tip: data.tip,
+      delivery_fee: data.deliveryFee,
+      discount: data.discount,
+      special_instructions: data.specialInstructions,
+      payment_method: data.paymentMethod.toLowerCase(),
+    });
     return response.data;
   },
 
@@ -228,7 +252,18 @@ export const addressesApi = {
   },
 
   create: async (data: CreateAddressDto): Promise<Address> => {
-    const response = await api.post('/addresses', data);
+    const response = await api.post('/addresses', {
+      label: data.label,
+      street: data.street,
+      apartment: data.apartment,
+      city: data.city,
+      state: data.state,
+      postal_code: data.postalCode,
+      latitude: data.lat,
+      longitude: data.lng,
+      instructions: data.instructions,
+      is_default: data.isDefault,
+    });
     return response.data;
   },
 

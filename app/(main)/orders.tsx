@@ -88,7 +88,7 @@ export default function OrdersScreen() {
               <Text style={styles.date}>
                 {new Date(item.placedAt).toLocaleDateString()}
               </Text>
-              <Text style={styles.total}>${item.total?.toFixed(2)}</Text>
+              <Text style={styles.total}>${parseFloat(String(item.total ?? 0)).toFixed(2)}</Text>
             </View>
             <Text style={styles.itemCount}>
               {item.items?.length || 0} item{(item.items?.length || 0) !== 1 ? 's' : ''}
