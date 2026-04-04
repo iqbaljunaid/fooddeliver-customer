@@ -5,8 +5,8 @@ const SERVER_URL_KEY = 'server_url';
 const SOCKET_URL_KEY = 'socket_url';
 
 const defaults = {
-  apiUrl: Constants.expoConfig?.extra?.apiUrl || 'http://localhost:3000',
-  socketUrl: Constants.expoConfig?.extra?.socketUrl || 'http://localhost:3000',
+  apiUrl: Constants.expoConfig?.extra?.apiUrl || 'http://138.2.177.115',
+  socketUrl: Constants.expoConfig?.extra?.socketUrl || 'http://138.2.177.115',
 };
 
 let cachedApiUrl: string | null = null;

@@ -144,7 +144,7 @@ export default function LoginScreen() {
               style={styles.modalInput}
               value={serverUrl}
               onChangeText={setServerUrl}
-              placeholder="http://192.168.1.107"
+              placeholder="http://138.2.177.115"
               placeholderTextColor="#999"
               autoCapitalize="none"
               autoCorrect={false}
@@ -156,7 +156,7 @@ export default function LoginScreen() {
               style={styles.modalInput}
               value={socketUrl}
               onChangeText={setSocketUrlState}
-              placeholder="http://192.168.1.107"
+              placeholder="http://138.2.177.115"
               placeholderTextColor="#999"
               autoCapitalize="none"
               autoCorrect={false}
