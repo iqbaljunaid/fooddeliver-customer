@@ -1,6 +1,6 @@
 # Food Rush Customer App - Development Handoff
 
-**Date:** April 4, 2026
+**Date:** April 6, 2026
 **Status:** Functional, tested on Android emulator
 
 ---
@@ -110,9 +110,23 @@ pnpm lint                    # ESLint
 
 ---
 
-## 8. Recent Changes (April 4, 2026)
+## 8. Recent Changes (April 6, 2026)
 
-### HTTPS → HTTP Fix
+### Real-Time Chat
+Added in-app chat for customer support conversations.
+
+| File | Change |
+|------|--------|
+| `app/(main)/chat.tsx` | Chat screen with conversation list |
+| `app/(main)/chat/[id].tsx` | Individual conversation thread with real-time messaging |
+| `hooks/useChatSocket.ts` | Socket.IO hook for real-time chat events |
+| `services/chatApi.ts` | Chat REST API client |
+| `app/(main)/_layout.tsx` | Added chat tab to bottom navigation |
+| `app/(main)/profile.tsx` | Added chat link on profile screen |
+
+### Previous Changes (April 4, 2026)
+
+#### HTTPS → HTTP Fix
 All default API/Socket URLs were pointing to `https://138.2.177.115` but the backend only serves HTTP. This caused network errors on sign-in.
 
 | File | Change |

@@ -79,6 +79,14 @@ export default function MainLayout() {
         name="order/[id]"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="chat"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="chat/[id]"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

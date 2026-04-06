@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../stores/authStore';
 import { profileApi } from '../../services/api';
 
@@ -119,6 +120,13 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* Support Chat */}
+        <TouchableOpacity style={styles.supportBtn} onPress={() => router.push('/(main)/chat')}>
+          <Ionicons name="chatbubbles-outline" size={20} color="#009DE0" />
+          <Text style={styles.supportBtnText}>Support Chat</Text>
+          <Ionicons name="chevron-forward" size={18} color="#999" />
+        </TouchableOpacity>
+
         {/* Logout */}
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
           <Text style={styles.logoutBtnText}>Log Out</Text>
@@ -188,4 +196,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoutBtnText: { color: '#E74C3C', fontSize: 16, fontWeight: '600' },
+  supportBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginTop: 16,
+    padding: 16,
+    gap: 12,
+  },
+  supportBtnText: { flex: 1, fontSize: 16, fontWeight: '500', color: '#1A1A1A' },
 });
