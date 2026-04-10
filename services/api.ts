@@ -61,12 +61,16 @@ export async function clearTokens(): Promise<void> {
   await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
 }
 
-// Request interceptor - add auth token
+// Request interceptor - add auth token (skip for auth endpoints)
 api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    const token = await getAccessToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const requestUrl = config.url || '';
+    const isAuthEndpoint = AUTH_ENDPOINTS.some((ep) => requestUrl.includes(ep));
+    if (!isAuthEndpoint) {
+      const token = await getAccessToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
