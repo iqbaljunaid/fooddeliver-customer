@@ -32,7 +32,17 @@ export default ({ config }) => ({
       'ACCESS_FINE_LOCATION',
     ],
   },
+  updates: {
+    enabled: true,
+    url: 'https://u.expo.dev/fa00f28a-8b8b-4326-be9e-7e212d9704ab',
+    fallbackToCacheTimeout: 0,
+    checkAutomatically: 'ON_LOAD',
+  },
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
   plugins: [
+    'expo-updates',
     'expo-router',
     [
       'expo-location',
