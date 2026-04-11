@@ -150,7 +150,7 @@ export default function RestaurantDetailScreen() {
             <Text style={styles.metaText}>{restaurant.estimatedDeliveryTime || 30} min</Text>
             <Text style={styles.metaDot}>·</Text>
             <Text style={styles.metaText}>
-              {Number(restaurant.deliveryFee) === 0 ? 'Free' : `$${Number(restaurant.deliveryFee).toFixed(2)}`} delivery
+              {Number(restaurant.deliveryFee) === 0 ? 'Free' : `€${Number(restaurant.deliveryFee).toFixed(2)}`} delivery
             </Text>
           </View>
         </View>
@@ -190,7 +190,7 @@ export default function RestaurantDetailScreen() {
           onPress={() => router.push('/(main)/cart')}
         >
           <Text style={styles.cartFabText}>
-            View Cart ({count}) · ${total.toFixed(2)}
+            View Cart ({count}) · €{total.toFixed(2)}
           </Text>
         </TouchableOpacity>
       )}
@@ -218,7 +218,7 @@ export default function RestaurantDetailScreen() {
             {selectedItem?.description ? (
               <Text style={styles.modalDesc}>{selectedItem.description}</Text>
             ) : null}
-            <Text style={styles.modalPrice}>${Number(selectedItem?.price).toFixed(2)}</Text>
+            <Text style={styles.modalPrice}>€{Number(selectedItem?.price).toFixed(2)}</Text>
 
             {/* Options */}
             {selectedItem?.options?.map((group) => (
@@ -238,7 +238,7 @@ export default function RestaurantDetailScreen() {
                     >
                       <Text style={styles.optionName}>{opt.name}</Text>
                       {Number(opt.price) > 0 && (
-                        <Text style={styles.optionPrice}>+${Number(opt.price).toFixed(2)}</Text>
+                        <Text style={styles.optionPrice}>+€{Number(opt.price).toFixed(2)}</Text>
                       )}
                     </TouchableOpacity>
                   );

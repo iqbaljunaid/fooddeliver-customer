@@ -26,7 +26,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }: Props) {
         ) : null}
       </View>
       <View style={styles.right}>
-        <Text style={styles.price}>${itemTotal.toFixed(2)}</Text>
+        <Text style={styles.price}>€{itemTotal.toFixed(2)}</Text>
         <View style={styles.quantityControls}>
           <TouchableOpacity
             style={styles.qtyBtn}

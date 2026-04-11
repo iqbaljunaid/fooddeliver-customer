@@ -28,7 +28,8 @@ import type { PaymentMethod, Address, CreateAddressDto } from '../../types';
 const TIPS = [0, 2, 3, 5];
 const DELIVERY_FEE = 2.99;
 const SERVICE_FEE_RATE = 0.05;
-const TAX_RATE = 0.08;
+const FOOD_VAT_RATE = 0.14;
+const FEE_VAT_RATE = 0.255;
 
 export default function CartScreen() {
   const { items, restaurantName, restaurantId, updateQuantity, removeItem, clearCart, subtotal } =
@@ -61,7 +62,9 @@ export default function CartScreen() {
 
   const sub = subtotal();
   const serviceFee = sub * SERVICE_FEE_RATE;
-  const tax = sub * TAX_RATE;
+  const foodVat = sub * FOOD_VAT_RATE;
+  const feeVat = (DELIVERY_FEE + serviceFee) * FEE_VAT_RATE;
+  const tax = foodVat + feeVat;
   const total = sub + DELIVERY_FEE + serviceFee + tax + tip;
 
   const handlePlaceOrder = async () => {
@@ -225,7 +228,7 @@ export default function CartScreen() {
                 onPress={() => setTip(t)}
               >
                 <Text style={[styles.tipText, tip === t && styles.tipTextActive]}>
-                  {t === 0 ? 'No tip' : `$${t}`}
+                  {t === 0 ? 'No tip' : `€${t}`}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -250,29 +253,29 @@ export default function CartScreen() {
           <Text style={styles.sectionTitle}>Order Summary</Text>
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Subtotal</Text>
-            <Text style={styles.priceValue}>${sub.toFixed(2)}</Text>
+            <Text style={styles.priceValue}>€{sub.toFixed(2)}</Text>
           </View>
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Delivery Fee</Text>
-            <Text style={styles.priceValue}>${DELIVERY_FEE.toFixed(2)}</Text>
+            <Text style={styles.priceValue}>€{DELIVERY_FEE.toFixed(2)}</Text>
           </View>
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Service Fee (5%)</Text>
-            <Text style={styles.priceValue}>${serviceFee.toFixed(2)}</Text>
+            <Text style={styles.priceValue}>€{serviceFee.toFixed(2)}</Text>
           </View>
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Tax (8%)</Text>
-            <Text style={styles.priceValue}>${tax.toFixed(2)}</Text>
+            <Text style={styles.priceLabel}>Tax (VAT)</Text>
+            <Text style={styles.priceValue}>€{tax.toFixed(2)}</Text>
           </View>
           {tip > 0 && (
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Tip</Text>
-              <Text style={styles.priceValue}>${tip.toFixed(2)}</Text>
+              <Text style={styles.priceValue}>€{tip.toFixed(2)}</Text>
             </View>
           )}
           <View style={[styles.priceRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+            <Text style={styles.totalValue}>€{total.toFixed(2)}</Text>
           </View>
         </View>
 
@@ -290,7 +293,7 @@ export default function CartScreen() {
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.placeOrderText}>
-              Place Order · ${total.toFixed(2)}
+              Place Order · €{total.toFixed(2)}
             </Text>
           )}
         </TouchableOpacity>

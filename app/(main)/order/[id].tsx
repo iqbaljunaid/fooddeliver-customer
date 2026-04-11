@@ -212,12 +212,12 @@ export default function OrderTrackingScreen() {
             <View key={item.id} style={styles.itemRow}>
               <Text style={styles.itemQty}>{item.quantity}x</Text>
               <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemPrice}>${parseFloat(String(item.subtotal ?? 0)).toFixed(2)}</Text>
+              <Text style={styles.itemPrice}>€{parseFloat(String(item.subtotal ?? 0)).toFixed(2)}</Text>
             </View>
           ))}
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>${parseFloat(String(order.total ?? 0)).toFixed(2)}</Text>
+            <Text style={styles.totalValue}>€{parseFloat(String(order.total ?? 0)).toFixed(2)}</Text>
           </View>
         </View>
 

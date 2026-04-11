@@ -30,7 +30,7 @@ export default function RestaurantCard({ restaurant, onPress }: Props) {
           <Text style={styles.time}>{restaurant.estimatedDeliveryTime || 30} min</Text>
           <Text style={styles.dot}>·</Text>
           <Text style={styles.fee}>
-            {Number(restaurant.deliveryFee) === 0 ? 'Free delivery' : `$${Number(restaurant.deliveryFee).toFixed(2)} delivery`}
+            {Number(restaurant.deliveryFee) === 0 ? 'Free delivery' : `€${Number(restaurant.deliveryFee).toFixed(2)} delivery`}
           </Text>
         </View>
       </View>

@@ -112,6 +112,19 @@ pnpm lint                    # ESLint
 
 ## 8. Recent Changes
 
+### Currency & VAT Migration — USD → EUR (April 11)
+Changed all currency display from `$` to `€` and replaced flat 8% tax with EU-style split VAT: **14% food VAT** on subtotal + **25.5% VAT** on delivery fee + service fee.
+
+| File | Change |
+|------|--------|
+| `app/(main)/cart.tsx` | Replaced `TAX_RATE: 0.08` with `FOOD_VAT_RATE: 0.14` + `FEE_VAT_RATE: 0.255`; all `$` → `€`; "Tax (8%)" → "Tax (VAT)" |
+| `app/(main)/restaurant/[id].tsx` | `$` → `€` in delivery fee, menu prices, option prices, cart FAB |
+| `app/(main)/orders.tsx` | `$` → `€` in order total |
+| `app/(main)/order/[id].tsx` | `$` → `€` in item subtotals and order total |
+| `components/RestaurantCard.tsx` | `$` → `€` in delivery fee |
+| `components/MenuItemCard.tsx` | `$` → `€` in item price |
+| `components/CartItem.tsx` | `$` → `€` in item total |
+
 ### OTA Updates via expo-updates (April 11)
 Enabled over-the-air updates so app can receive JS bundle updates without a new APK build.
 
