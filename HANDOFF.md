@@ -1,6 +1,6 @@
 # Food Rush Customer App - Development Handoff
 
-**Date:** April 6, 2026
+**Date:** April 11, 2026
 **Status:** Functional, tested on Android emulator
 
 ---
@@ -110,9 +110,52 @@ pnpm lint                    # ESLint
 
 ---
 
-## 8. Recent Changes (April 6, 2026)
+## 8. Recent Changes
 
-### Real-Time Chat
+### OTA Updates via expo-updates (April 11)
+Enabled over-the-air updates so app can receive JS bundle updates without a new APK build.
+
+| File | Change |
+|------|--------|
+| `app.config.js` | Added `updates` config with EAS project URL, `runtimeVersion` policy, `expo-updates` plugin |
+| `app/_layout.tsx` | Added update check on mount — prompts user to restart when update is available |
+| `eas.json` | Added `channel` per build profile (development/preview/production) |
+| `package.json` | Added `expo-updates` dependency |
+
+### Default Address on Registration (April 11)
+Customer registration now includes default delivery address fields (street, city, postal code, country).
+
+| File | Change |
+|------|--------|
+| `app/(auth)/register.tsx` | Added address fields (street, city, postalCode, country) to registration form |
+| `services/api.ts` | Updated register API call to include address data |
+| `stores/authStore.ts` | Updated register action to pass address fields |
+
+### Cart Coordinate Fix (April 11)
+Fixed checkout crash when GPS coordinates are unavailable.
+
+| File | Change |
+|------|--------|
+| `app/(main)/cart.tsx` | Send `undefined` instead of `null` for missing coordinates — backend rejects null |
+
+### EAS Build Workflow (April 10)
+Added GitHub Actions CI for automatic EAS Android builds on push to main.
+
+| File | Change |
+|------|--------|
+| `.github/workflows/eas-build.yml` | EAS build workflow (preview profile, Android) |
+| `app.config.js` | Hardcoded EAS project ID, set slug |
+| `eas.json` | Build profile configuration |
+
+### Password Visibility & Stale Token Fix (April 8)
+PR #1 merged: added password show/hide toggle on login and fixed stale token issue.
+
+| File | Change |
+|------|--------|
+| `app/(auth)/login.tsx` | Password visibility toggle button |
+| `services/api.ts` | Clear stale token before login attempt |
+
+### Real-Time Chat (April 6)
 Added in-app chat for customer support conversations.
 
 | File | Change |
@@ -127,22 +170,11 @@ Added in-app chat for customer support conversations.
 ### Previous Changes (April 4, 2026)
 
 #### HTTPS → HTTP Fix
-All default API/Socket URLs were pointing to `https://138.2.177.115` but the backend only serves HTTP. This caused network errors on sign-in.
-
-| File | Change |
-|------|--------|
-| `.env` | `https://` → `http://` for API and Socket URLs |
-| `app/(auth)/login.tsx` | Default URL placeholders updated to `http://` |
-| `services/serverConfig.ts` | Fallback defaults changed to `http://138.2.177.115` |
-
-### Verified
-- Login with `alice@demo.com` on Android emulator — shows Home with restaurants, Orders tab shows 3 delivered orders
-- Socket connection established for real-time order tracking
+All default API/Socket URLs changed from `https://` to `http://` — backend serves HTTP only.
 
 ---
 
 ## 9. Known Issues
 
-- `app.config.js` still has `https://` in build-time env defaults (only affects EAS builds, not Expo Go)
 - No push notifications — order updates are WebSocket-only
 - No offline mode
