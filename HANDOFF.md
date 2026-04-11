@@ -1,6 +1,6 @@
 # Food Rush Customer App - Development Handoff
 
-**Date:** April 11, 2026
+**Date:** April 12, 2026
 **Status:** Functional, tested on Android emulator
 
 ---
@@ -111,6 +111,13 @@ pnpm lint                    # ESLint
 ---
 
 ## 8. Recent Changes
+
+### Token Refresh 415 Fix (April 12)
+Token refresh was sending `null` body, which defaults to `application/x-www-form-urlencoded`. Backend expects JSON, returned 415.
+
+| File | Change |
+|------|--------|
+| `services/api.ts` | Changed refresh calls from `null` to `{}` with explicit `Content-Type: application/json` |
 
 ### Currency & VAT Migration — USD → EUR (April 11)
 Changed all currency display from `$` to `€` and replaced flat 8% tax with EU-style split VAT: **14% food VAT** on subtotal + **25.5% VAT** on delivery fee + service fee.
