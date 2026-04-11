@@ -17,6 +17,11 @@ interface AuthState {
     password: string;
     name: string;
     phone: string;
+    street?: string;
+    apartment?: string;
+    city?: string;
+    postalCode?: string;
+    country?: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
   loadStoredAuth: () => Promise<void>;

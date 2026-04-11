@@ -163,6 +163,11 @@ export const authApi = {
     password: string;
     name: string;
     phone: string;
+    street?: string;
+    apartment?: string;
+    city?: string;
+    postalCode?: string;
+    country?: string;
   }): Promise<LoginResponse> => {
     const response = await api.post('/auth/register/customer', data);
     return response.data;

@@ -19,8 +19,13 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [street, setStreet] = useState('');
+  const [apartment, setApartment] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [country, setCountry] = useState('');
 
-  const isValid = name.trim() && email.trim() && phone.trim() && password.trim().length >= 6;
+  const isValid = name.trim() && email.trim() && phone.trim() && password.trim().length >= 6 && street.trim() && city.trim();
 
   const handleRegister = async () => {
     if (!isValid) return;
@@ -30,6 +35,11 @@ export default function RegisterScreen() {
         email: email.trim(),
         phone: phone.trim(),
         password,
+        street: street.trim(),
+        apartment: apartment.trim() || undefined,
+        city: city.trim(),
+        postalCode: postalCode.trim() || undefined,
+        country: country.trim() || undefined,
       });
       router.replace('/(main)');
     } catch {
@@ -110,6 +120,61 @@ export default function RegisterScreen() {
             secureTextEntry
             textContentType="newPassword"
             autoComplete="password-new"
+          />
+
+          <View style={styles.divider} />
+          <Text style={styles.sectionTitle}>Delivery Address</Text>
+
+          <Text style={styles.label}>Street</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="123 Main Street"
+            value={street}
+            onChangeText={setStreet}
+            textContentType="streetAddressLine1"
+            autoComplete="street-address"
+          />
+
+          <Text style={styles.label}>Apt / Building (optional)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Apt 4B"
+            value={apartment}
+            onChangeText={setApartment}
+            textContentType="streetAddressLine2"
+          />
+
+          <View style={styles.row}>
+            <View style={styles.halfField}>
+              <Text style={styles.label}>Postcode</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="10001"
+                value={postalCode}
+                onChangeText={setPostalCode}
+                textContentType="postalCode"
+                autoComplete="postal-code"
+              />
+            </View>
+            <View style={styles.halfField}>
+              <Text style={styles.label}>City</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="New York"
+                value={city}
+                onChangeText={setCity}
+                textContentType="addressCity"
+              />
+            </View>
+          </View>
+
+          <Text style={styles.label}>Country</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="United States"
+            value={country}
+            onChangeText={setCountry}
+            textContentType="countryName"
           />
 
           <TouchableOpacity
@@ -218,5 +283,24 @@ const styles = StyleSheet.create({
   loginBold: {
     fontWeight: '600',
     color: '#009DE0',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E5E5E5',
+    marginTop: 20,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginBottom: 4,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  halfField: {
+    flex: 1,
   },
 });
