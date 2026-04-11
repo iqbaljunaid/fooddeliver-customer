@@ -46,8 +46,6 @@
     "expo-constants": "~55.0.13",
     "expo-linking": "~55.0.12",
     "expo-location": "~55.1.8",
-    "expo-modules-autolinking": "~55.0.12",
-    "expo-modules-core": "~55.0.22",
     "expo-router": "~55.0.12",
     "expo-secure-store": "~55.0.13",
     "expo-splash-screen": "~55.0.17",
