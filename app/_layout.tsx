@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Alert } from 'react-native';
+import { useKeepAwake } from 'expo-keep-awake';
 import * as Updates from 'expo-updates';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
@@ -19,6 +20,7 @@ const queryClient = new QueryClient({
 });
 
 function RootLayoutNav() {
+  useKeepAwake();
   const { isLoading, loadStoredAuth } = useAuthStore();
   const { loadCart } = useCartStore();
   const [configLoaded, setConfigLoaded] = useState(false);
