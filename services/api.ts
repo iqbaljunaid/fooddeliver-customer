@@ -128,8 +128,8 @@ api.interceptors.response.use(
           return Promise.reject(error);
         }
 
-        const response = await axios.post(`${getApiUrl()}/auth/refresh`, null, {
-          headers: { Authorization: `Bearer ${refreshToken}` },
+        const response = await axios.post(`${getApiUrl()}/auth/refresh`, {}, {
+          headers: { Authorization: `Bearer ${refreshToken}`, 'Content-Type': 'application/json' },
         });
 
         const { accessToken, refreshToken: newRefreshToken } = response.data;
@@ -175,8 +175,8 @@ export const authApi = {
 
   refreshTokens: async () => {
     const refreshToken = await getRefreshToken();
-    const response = await axios.post(`${getApiUrl()}/auth/refresh`, null, {
-      headers: { Authorization: `Bearer ${refreshToken}` },
+    const response = await axios.post(`${getApiUrl()}/auth/refresh`, {}, {
+      headers: { Authorization: `Bearer ${refreshToken}`, 'Content-Type': 'application/json' },
     });
     return response.data;
   },
