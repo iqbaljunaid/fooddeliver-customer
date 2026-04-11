@@ -56,17 +56,9 @@ export default ({ config }) => ({
       origin: false,
     },
     eas: {
-      projectId: process.env.EAS_PROJECT_ID || '',
+      projectId: 'fa00f28a-8b8b-4326-be9e-7e212d9704ab',
     },
     apiUrl: process.env.EXPO_PUBLIC_API_URL || 'http://138.2.177.115',
     socketUrl: process.env.EXPO_PUBLIC_SOCKET_URL || 'http://138.2.177.115',
   },
-},
-{                                              "expo": {
-    "extra": {
-      "eas": {
-        "projectId": "fa00f28a-8b8b-4326-be9e-7e212d9704ab"
-      }
-    }
-  }
 });
