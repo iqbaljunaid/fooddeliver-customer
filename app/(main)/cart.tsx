@@ -24,6 +24,7 @@ import CartItemComponent from '../../components/CartItem';
 import AddressSelector from '../../components/AddressSelector';
 import PaymentSelector from '../../components/PaymentSelector';
 import type { PaymentMethod, Address, CreateAddressDto } from '../../types';
+import type { CartItem } from '../../types';
 
 const TIPS = [0, 2, 3, 5];
 const DELIVERY_FEE = 2.99;
@@ -32,7 +33,7 @@ const FOOD_VAT_RATE = 0.14;
 const FEE_VAT_RATE = 0.255;
 
 export default function CartScreen() {
-  const { items, restaurantName, restaurantId, updateQuantity, removeItem, clearCart, subtotal } =
+  const { items, restaurantName, restaurantId, updateQuantity, updateItem, removeItem, clearCart, subtotal } =
     useCartStore();
   const { user } = useAuthStore();
   const { data: addresses, isLoading: loadingAddresses } = useAddresses();
@@ -48,6 +49,9 @@ export default function CartScreen() {
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [isPlacing, setIsPlacing] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
+  const [editingItem, setEditingItem] = useState<CartItem | null>(null);
+  const [editQty, setEditQty] = useState('1');
+  const [editInstructions, setEditInstructions] = useState('');
 
   // New address form
   const [newLabel, setNewLabel] = useState('home');
@@ -159,6 +163,28 @@ export default function CartScreen() {
     }
   };
 
+  const handleOpenEdit = (item: CartItem) => {
+    setEditingItem(item);
+    setEditQty(String(item.quantity));
+    setEditInstructions(item.specialInstructions || '');
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingItem) return;
+
+    const parsedQty = parseInt(editQty, 10);
+    if (!Number.isFinite(parsedQty) || parsedQty < 1) {
+      Alert.alert('Invalid quantity', 'Quantity must be at least 1.');
+      return;
+    }
+
+    updateItem(editingItem.id, {
+      quantity: parsedQty,
+      specialInstructions: editInstructions.trim(),
+    });
+    setEditingItem(null);
+  };
+
   if (items.length === 0) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
@@ -194,6 +220,7 @@ export default function CartScreen() {
               item={item}
               onUpdateQuantity={updateQuantity}
               onRemove={removeItem}
+              onEdit={handleOpenEdit}
             />
           ))}
         </View>
@@ -369,6 +396,54 @@ export default function CartScreen() {
             >
               <Text style={styles.cancelAddrText}>Cancel</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Edit Cart Item Modal */}
+      <Modal
+        visible={!!editingItem}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setEditingItem(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Item</Text>
+
+            <Text style={styles.inputLabel}>Quantity</Text>
+            <TextInput
+              style={styles.modalInput}
+              keyboardType="number-pad"
+              value={editQty}
+              onChangeText={setEditQty}
+              placeholder="1"
+            />
+
+            <Text style={styles.inputLabel}>Special Instructions</Text>
+            <TextInput
+              style={[styles.modalInput, styles.multiLineInput]}
+              value={editInstructions}
+              onChangeText={setEditInstructions}
+              placeholder="No onions, extra sauce, etc."
+              multiline
+              numberOfLines={3}
+            />
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[styles.modalBtn, styles.cancelBtn]}
+                onPress={() => setEditingItem(null)}
+              >
+                <Text style={styles.cancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalBtn, styles.saveBtn]}
+                onPress={handleSaveEdit}
+              >
+                <Text style={styles.saveText}>Save</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>

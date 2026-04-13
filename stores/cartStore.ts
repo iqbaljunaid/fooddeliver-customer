@@ -17,6 +17,7 @@ interface CartState {
   addItem: (item: Omit<CartItem, 'id'>, restaurantId: string, restaurantName: string) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
+  updateItem: (id: string, updates: { quantity?: number; specialInstructions?: string }) => void;
   clearCart: () => void;
   loadCart: () => Promise<void>;
 
@@ -87,6 +88,33 @@ export const useCartStore = create<CartState>((set, get) => ({
       return;
     }
     const newItems = get().items.map((i) => (i.id === id ? { ...i, quantity } : i));
+    const newState = { items: newItems, restaurantId: get().restaurantId, restaurantName: get().restaurantName };
+    set(newState);
+    persistCart(newState);
+  },
+
+  updateItem: (id, updates) => {
+    const existing = get().items.find((i) => i.id === id);
+    if (!existing) return;
+
+    const quantity = updates.quantity ?? existing.quantity;
+    if (quantity <= 0) {
+      get().removeItem(id);
+      return;
+    }
+
+    const newItems = get().items.map((i) =>
+      i.id === id
+        ? {
+            ...i,
+            quantity,
+            specialInstructions:
+              updates.specialInstructions !== undefined
+                ? updates.specialInstructions
+                : i.specialInstructions,
+          }
+        : i,
+    );
     const newState = { items: newItems, restaurantId: get().restaurantId, restaurantName: get().restaurantName };
     set(newState);
     persistCart(newState);

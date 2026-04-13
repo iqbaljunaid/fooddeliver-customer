@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
 import { authApi, setTokens, clearTokens, getAccessToken, setOnAuthFailure } from '../services/api';
 import type { User, LoginResponse } from '../types';
+import { useCartStore } from './cartStore';
 
 const USER_KEY = 'user_data';
 
@@ -39,10 +40,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
+      const previousUserId = get().user?.id;
       const response: LoginResponse = await authApi.login(email, password);
 
       if (response.user.role !== 'customer') {
         throw new Error('This app is for customers only.');
+      }
+
+      if (previousUserId && previousUserId !== response.user.id) {
+        useCartStore.getState().clearCart();
       }
 
       await setTokens(response.accessToken, response.refreshToken);
@@ -65,7 +71,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
+      const previousUserId = get().user?.id;
       const response: LoginResponse = await authApi.registerCustomer(data);
+
+      if (previousUserId && previousUserId !== response.user.id) {
+        useCartStore.getState().clearCart();
+      }
 
       await setTokens(response.accessToken, response.refreshToken);
       await SecureStore.setItemAsync(USER_KEY, JSON.stringify(response.user));
@@ -89,6 +100,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await clearTokens();
       await SecureStore.deleteItemAsync(USER_KEY);
+      useCartStore.getState().clearCart();
     } catch (error) {
       console.error('Error during logout:', error);
     } finally {
@@ -108,6 +120,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const token = await getAccessToken();
 
       if (!token) {
+        useCartStore.getState().clearCart();
         set({ isLoading: false, isAuthenticated: false });
         return;
       }
@@ -131,6 +144,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       } else {
         await clearTokens();
+        useCartStore.getState().clearCart();
         set({ isLoading: false, isAuthenticated: false });
       }
     } catch (error) {
@@ -153,6 +167,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
 // Register auth failure callback
 setOnAuthFailure(() => {
+  useCartStore.getState().clearCart();
   useAuthStore.setState({
     user: null,
     isAuthenticated: false,

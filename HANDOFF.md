@@ -1,6 +1,6 @@
 # Food Rush Customer App - Development Handoff
 
-**Date:** April 12, 2026
+**Date:** April 13, 2026
 **Status:** Functional, tested on Android emulator
 
 ---
@@ -111,6 +111,16 @@ pnpm lint                    # ESLint
 ---
 
 ## 8. Recent Changes
+
+### Cart Item Editing (April 13)
+Added ability to edit cart items inline — change quantity and add/edit special instructions without removing and re-adding.
+
+| File | Change |
+|------|--------|
+| `app/(main)/cart.tsx` | Added edit modal with quantity input and special instructions textarea; `handleOpenEdit`/`handleSaveEdit` handlers |
+| `components/CartItem.tsx` | Added `onEdit` prop and "Edit" button on each cart item |
+| `stores/cartStore.ts` | Added `updateItem(id, { quantity, specialInstructions })` action |
+| `stores/authStore.ts` | Minor updates |
 
 ### Token Refresh 415 Fix (April 12)
 Token refresh was sending `null` body, which defaults to `application/x-www-form-urlencoded`. Backend expects JSON, returned 415.

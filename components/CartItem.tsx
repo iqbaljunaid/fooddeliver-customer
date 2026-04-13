@@ -6,9 +6,10 @@ interface Props {
   item: CartItemType;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onRemove: (id: string) => void;
+  onEdit: (item: CartItemType) => void;
 }
 
-export default function CartItem({ item, onUpdateQuantity, onRemove }: Props) {
+export default function CartItem({ item, onUpdateQuantity, onRemove, onEdit }: Props) {
   const optionsTotal = item.options.reduce((sum, o) => sum + o.price, 0);
   const itemTotal = (item.price + optionsTotal) * item.quantity;
 
@@ -27,6 +28,9 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }: Props) {
       </View>
       <View style={styles.right}>
         <Text style={styles.price}>€{itemTotal.toFixed(2)}</Text>
+        <TouchableOpacity style={styles.editBtn} onPress={() => onEdit(item)}>
+          <Text style={styles.editBtnText}>Edit</Text>
+        </TouchableOpacity>
         <View style={styles.quantityControls}>
           <TouchableOpacity
             style={styles.qtyBtn}
@@ -85,6 +89,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#1A1A1A',
+  },
+  editBtn: {
+    marginTop: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    backgroundColor: '#EEF7FD',
+  },
+  editBtnText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#009DE0',
   },
   quantityControls: {
     flexDirection: 'row',
